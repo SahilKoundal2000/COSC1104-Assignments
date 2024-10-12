@@ -1,64 +1,69 @@
 # Function to check if a number is prime
-def is_prime(n):
-    if n <= 1:  # Selection: numbers less than or equal to 1 are not prime
+# Reference: https://www.geeksforgeeks.org/python-program-to-check-whether-a-number-is-prime-or-not/
+# This function determines whether the given number is prime. It returns True if the number is prime, and False otherwise.
+def is_prime(num):
+    if num > 1:
+        for i in range(2, (num // 2) + 1):
+            if (num % i) == 0:
+                return False
+        return True
+    else:
         return False
-    for i in range(2, n):  # Iteration: check divisibility from 2 to n-1
-        if n % i == 0:
-            return False  # Selection: if divisible by any number, it's not prime
-    return True  # If no divisors are found, it's prime
 
 # Function to find the previous prime number
+# This function finds the largest prime number less than the given number. It iterates downwards from the number and returns the first prime it encounters.
 def previous_prime(n):
-    for i in range(n - 1, 1, -1):  # Iteration: move backwards from n-1
+    for i in range(n - 1, 1, -1):
         if is_prime(i):
-            return i  # Return the first previous prime found
-    return None  # No previous prime found
+            return i
+    return None
 
 # Function to find the next prime number
+# This function finds the smallest prime number greater than the given number. It increments from the number until it finds a prime.
 def next_prime(n):
-    i = n + 1  # Start checking from n+1
-    while not is_prime(i):  # Iteration: keep checking next numbers until prime is found
+    i = n + 1
+    while not is_prime(i):
         i += 1
     return i
 
-# Function to find factors of a number
-def find_factors(n):
-    factors = []  # List to store factors
-    for i in range(2, n):  # Iteration: find divisors from 2 to n-1
+# Function to find divisors of a number
+# This function collects all divisors of the given number greater than 1. It iterates through possible divisors and adds them to a list if they divide evenly.
+def find_divisors(n):
+    divisors = []
+    for i in range(2, n):
         if n % i == 0:
-            factors.append(i)  # Add divisors to the list
-    return factors  # Return list of factors
+            divisors.append(i)
+    return divisors
 
-# Main program logic
+# Main function to handle user input and display results
+# This function repeatedly prompts the user for a positive whole number until valid input is received. It checks if the number is prime and outputs relevant information including previous and next primes.
 def main():
     while True:
-        user_input = input("Please enter the number to check: ")
-
-        if user_input.isdigit():  # Selection: validate that input is a positive whole number
+        user_input = input("Please enter a positive whole number: ")
+        
+        if user_input.isdigit():
             num = int(user_input)
 
-            # Find the previous prime number
+            if is_prime(num):
+                print(f"{num} is a prime number.")
+            else:
+                print(f"{num} is not a prime number.")
+                divisors = find_divisors(num)
+                print(f"Its divisors are: {', '.join(map(str, divisors))}")
+
             prev_prime = previous_prime(num)
             if prev_prime:
                 print(f"The prime number before {num} is {prev_prime}.")
             else:
                 print(f"There is no prime number before {num}.")
 
-            # Check if the number is prime
-            if is_prime(num):
-                print(f"{num} is a prime number.")
-            else:
-                factors = find_factors(num)
-                print(f"{num} is not prime. Its factors are {', '.join(map(str, factors))}.")
-
-            # Find the next prime number
             print(f"The prime number after {num} is {next_prime(num)}.")
-
-            input("\nPress Enter to exit the program...")  # Wait for user to press Enter to exit
-            break  # Exit loop after processing the input
+            input("\nPress Enter to exit the program...")
+            print("Thank you!")
+            break
         else:
-            print("That is not a positive whole number. Try again.\n")  # Selection: re-prompt for valid input
+            print("That is not a positive whole number. Please try again.\n")
 
 if __name__ == "__main__":
-    main()  # Start the program
+    main()
 
