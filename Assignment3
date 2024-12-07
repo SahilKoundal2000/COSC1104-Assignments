@@ -1,1 +1,97 @@
+import datetime
+import matplotlib.pyplot as plt
 
+
+def Mock_data():
+    # Generating mock data for the program 
+    print("Generating mock cost data...")
+    current_date = datetime.date.today()
+    months = [
+        (current_date - datetime.timedelta(days=30 * i)).strftime('%Y-%m')
+        for i in range(5, -1, -1)
+    ]
+    costs = [200 + (i * 50) for i in range(len(months))]  # Incrementing in each month by 50  for demonstration 
+    return list(zip(months, costs))
+
+
+def Calculation_Future_cost(cost_data):
+    #calculation future cost based on the given data 
+    
+    
+    print("Calculating future cost...")
+    if len(cost_data) < 2:
+        print("Insufficient data for prediction. Using last known cost if available.")
+        return cost_data[-1][1] if cost_data else 0.0
+
+    historical_costs = [data[1] for data in cost_data]
+    print("Historical costs:", historical_costs)
+
+    total_increase = sum(
+        historical_costs[i] - historical_costs[i - 1]
+        for i in range(1, len(historical_costs))
+    )
+    average_increase = total_increase / (len(historical_costs) - 1)
+    predicted_cost = historical_costs[-1] + average_increase
+    print(f"Predicted next month's cost: {predicted_cost}")
+    return predicted_cost
+
+
+def Graph(cost_data, future_cost=None):
+    #Showing all the previous cost and predicted cost in a graph 
+    print("Plotting cost analysis...")
+    months = [data[0] for data in cost_data]
+    costs = [data[1] for data in cost_data]
+
+    plt.figure(figsize=(10, 5))
+    plt.plot(months, costs, marker='o', label='Historical Costs')
+
+    if future_cost:
+        future_month = (datetime.date.today() + datetime.timedelta(days=30)).strftime('%Y-%m')
+        plt.plot([months[-1], future_month], [costs[-1], future_cost], 'r--', label='Predicted Cost')
+        print(f"Predicted cost for {future_month} added to the graph.")
+
+    plt.xlabel('Month')
+    plt.ylabel('Cost ')
+    plt.title('Cloud Cost Analysis and Prediction')
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+
+def Suggestion_Optimization(cost_data):
+    #providing cost optimization suggestion's 
+    print("Analyzing data for optimization suggestions...")
+    if not cost_data:
+        print("No cost data available for analysis.")
+        return
+
+    average_cost = sum(data[1] for data in cost_data) / len(cost_data)
+    print(f"Average cost: {average_cost}")
+
+    if average_cost > 1000:
+        print("Suggestion: Consider reserved instances, rightsizing resources.")
+    else:
+        print("Suggestion: Costs are within manageable levels.")
+
+
+def main():
+    
+    print("Starting Cloud Cost Analysis Tool...")
+    
+    # Step 1: Retrieve cost data
+    cost_data = Mock_data()
+    print("Retrieved cost data:", cost_data)
+    
+    # Step 2: Predict future costs
+    future_cost = Calculation_Future_cost(cost_data)
+    print(f"Predicted future cost: {future_cost}")
+    
+    # Step 3: Visualize costs and prediction
+    Graph(cost_data, future_cost)
+    
+    # Step 4: Provide optimization suggestions
+    Suggestion_Optimization(cost_data)
+
+
+if __name__ == "__main__":
+    main()
